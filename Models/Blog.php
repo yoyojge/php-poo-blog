@@ -4,8 +4,6 @@ namespace Models;
 
 use PDO;
 
-require_once ('Models/Database.php');
-
 
 class Blog extends Database {
 

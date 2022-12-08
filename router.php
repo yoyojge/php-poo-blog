@@ -9,6 +9,9 @@ $controller = ucfirst($params[0]);
 $method = !empty($params[1]) ? $params[1] : 'index';
 require(ROOT . '/Models/Database.php');
 
+
+
+
 if (file_exists("Controllers/". $controller . "Controller.php")) {
 	include("Controllers/" . $controller . "Controller.php");
 	$controller = "Controllers\\$controller" . "Controller";

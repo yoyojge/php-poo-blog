@@ -4,6 +4,11 @@
 <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
     <div class="p-2">
 
+        <div>
+            <?= !empty($_SESSION['msgErr'])  ?  $_SESSION['msgErr'] :"" ?>
+        </div>
+
+
     <?php foreach($blogs as $blog) : ?>
         <a href="/blog/show/<?= $blog['id'] ?>">
             <div class="relative">

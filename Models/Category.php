@@ -4,7 +4,7 @@ namespace Models;
 
 use PDO;
 
-require_once ('Models/Database.php');
+// require_once ('Models/Database.php');
 
 
 class Category extends Database {

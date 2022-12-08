@@ -19,6 +19,7 @@ class BlogController {
 	public function index() {
 		// Ici on recupere tout les articles de blog
 		//appel de fonction de model
+		$_SESSION['msgErr'] = "";
 		$blog = new Blog;
 		$blogs = $blog->getAllBlogs();
 		include('Views/blog/index.php');
@@ -34,35 +35,51 @@ class BlogController {
 
 	// /blog/create
 	public function create() {
-		// affiche la vue de creation de blog
-		$cat = new Category;
-		$categories = $cat->getCategories();
-		include('Views/blog/create.php');
+		$_SESSION['msgErr'] = "";
+		if( isset( $_SESSION['connected'])  && $_SESSION['connected'] === true ){
+			// affiche la vue de creation de blog
+			$cat = new Category;
+			$categories = $cat->getCategories();
+			include('Views/blog/create.php');
+		}
+		else{
+			$_SESSION['msgErr'] .= "Vous n'avez pas acces a cette partie !!! <br />";
+			header("Location: /blog/");
+		}
 	}
 
 	// /blog/store
 	public function store() {
-		// on recupere $_POST, on traite les informations			 
-		if( !empty( $_POST["title"] ) && !empty( $_POST["content"] ) && !empty( $_POST["categorie"]) && !empty( $_POST["author"]) && !empty( $_POST["resume"]) ){
-			$title =  htmlentities($_POST["title"]);
-			$content =  htmlentities($_POST["content"]);
-			$categorie =  htmlentities($_POST["categorie"]);
-			$resume =  htmlentities($_POST["resume"]);
-			$author =  htmlentities($_POST["author"]);
-			$tab=[];
-			$tab['title'] = $title;
-			$tab['content'] = $content;
-			$tab['categorie'] = $categorie;
-			$tab['resume'] = $resume;
-			$tab['author'] = $author;
-			
-			// on envois au model pour sauvegarder en base de donnée;
-			$blog = new Blog;
-			$stored = $blog->insertBlog($tab);
-			
-			// Une fois fini, on redirige vers la page de l'article
-			header("Location: /blog/show/".$stored);
-			
+
+		$_SESSION['msgErr'] = "";
+		// on recupere $_POST, on traite les informations	
+		if( isset( $_SESSION['connected'])  && $_SESSION['connected'] === true ){
+		
+			if( !empty( $_POST["title"] ) && !empty( $_POST["content"] ) && !empty( $_POST["categorie"]) && !empty( $_POST["author"]) && !empty( $_POST["resume"]) ){
+				$title =  htmlentities($_POST["title"]);
+				$content =  $_POST["content"];
+				$categorie =  htmlentities($_POST["categorie"]);
+				$resume =  htmlentities($_POST["resume"]);
+				$author =  htmlentities($_POST["author"]);
+				$tab=[];
+				$tab['title'] = $title;
+				$tab['content'] = $content;
+				$tab['categorie'] = $categorie;
+				$tab['resume'] = $resume;
+				$tab['author'] = $author;
+				
+				// on envois au model pour sauvegarder en base de donnée;
+				$blog = new Blog;
+				$stored = $blog->insertBlog($tab);
+				
+				// Une fois fini, on redirige vers la page de l'article
+				header("Location: /blog/show/".$stored);
+				
+			}
+		}
+		else{
+			$_SESSION['msgErr'] .= "Vous n'avez pas acces a cette partie !!! <br />";
+			header("Location: /blog/");
 		}
 		
 	}
