@@ -29,15 +29,16 @@ class User extends Database {
 	 public function insertUser($tab) {
 		
 		$request = $this->bdd->prepare('
-          INSERT INTO users (first_name, last_name, email, password, active  ) 
-          VALUES (:first_name, :last_name, :email, :password, 1 )
+          INSERT INTO users (first_name, last_name, email, password, active, token  ) 
+          VALUES (:first_name, :last_name, :email, :password, 0, :token )
 		');
 
-		$request->execute([
+		return $request->execute([
                'first_name' =>  $tab['first_name'],
 			'last_name' =>  $tab['last_name'],
 			'email' =>  $tab['email'],
-			'password' =>  $tab['password']
+			'password' =>  $tab['password'],
+			'token' =>  $tab['token']
           ]);
 	       
 		// return $this->bdd->lastInsertId();
@@ -48,7 +49,7 @@ class User extends Database {
 	public function connect($tab) {
 		
 		$request = $this->bdd->prepare('
-          SELECT email FROM  users WHERE email= :email AND password = :password
+          SELECT email FROM  users WHERE email= :email AND password = :password AND active =1
 		');
 
 		$request->execute([
@@ -57,6 +58,21 @@ class User extends Database {
           ]);
 	     $data = $request->fetch();    
 		return $data;
+	}
+
+
+	//function validByToken
+	public function validByToken($token) {
+		
+		$request = $this->bdd->prepare('
+		UPDATE users SET token = "", active = 1  WHERE token = :token
+		');
+
+		$request->execute([
+			'token' =>  $token
+          ]);
+	     // $data = $request->fetch();    
+		// return $data;
 	}
 
 

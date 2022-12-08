@@ -5,6 +5,11 @@ namespace Controllers;
 require_once('Models/User.php');
 use Models\User;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
+
 class UserController {
 
 	
@@ -40,6 +45,8 @@ class UserController {
 			$tab['last_name'] = $_SESSION['last_name'];
 			$tab['email'] = $_SESSION['email'];
 			$tab['password'] = $password;
+ 
+			$tab['token'] = base_convert(hash('sha256', time() . mt_rand()), 16, 36);
 
 			
 			$_SESSION['msgErr'] = "";
@@ -89,11 +96,46 @@ class UserController {
 				$tab['password'] = hash('sha256', $tab['password']);
 				// on envois au model pour sauvegarder en base de donnée;
 				// var_dump($tab);
-				$this->user->insertUser($tab);
+				$enregistrement =  $this->user->insertUser($tab);
 
-				// Une fois fini, on redirige vers la page de l'article
-				$_SESSION['msgErr'] = "";
-				header("Location: /blog");
+				
+				//envoi du mail avec le lien avec le jeton
+				if($enregistrement === true){
+
+
+					$mail = new PHPMailer();
+
+					// $mail->SMTPDebug = 2;                   			// Enable verbose debug output
+					$mail->isSMTP();                        			// Set mailer to use SMTP
+					$mail->Host       = 'smtp.gmail.com;';    			// Specify main SMTP server
+					$mail->SMTPAuth   = true;               			// Enable SMTP authentication
+					$mail->Username   = 'johann.griffe.pro@gmail.com';     // SMTP username
+					$mail->Password   = 'quxrjnsykkozkrjo';         		// SMTP password
+					$mail->SMTPSecure = 'tls';              			// Enable TLS encryption, 'ssl' also accepted
+					$mail->Port       = 587;                			// TCP port to connect to
+
+					$mail->setFrom('johann.griffe.pro@gmail.com', 'johann');           	// Set sender of the mail
+					       	// Add a recipient
+					$mail->addAddress($tab['email'], $tab['first_name']);   	// Name is optional
+
+					$mail->isHTML(true);                                  
+					$mail->Subject = 'Subject';
+					$mail->Body    = 'HTML message body in <b>bold</b>!<br /> <a href="http://blog/?token='.$tab["token"].'" target="_blank">click that</a>';
+					$mail->AltBody = 'Body in plain text for non-HTML mail clients';
+
+					$mail->send();
+					
+					// Une fois fini, on redirige vers la page de l'article
+					$_SESSION['msgErr'] = "Veuillez confirmer votre inscription en cliquant dans l'email";
+					header("Location: /blog");
+					return;
+				}
+				else{
+					$_SESSION['msgErr'] = "Il y a eu un probleme lors de votre inscription";
+					header("Location: /user/create");
+					return;
+				}
+				
 
 
 			}

@@ -6,16 +6,6 @@
         <!-- Formulaire d'ajout de tâche -->
 
         <div>
-            <!-- <?php 
-                var_dump($_SESSION['msgErr']); 
-                echo $_SESSION['msgErr'];
-                if(!empty($_SESSION['msgErr'])){
-                    echo $_SESSION['msgErr'];
-                }
-                else{
-                    echo "pas d'erreur";
-                }
-            ?> -->
             <?= !empty($_SESSION['msgErr'])  ?  $_SESSION['msgErr'] :"" ?>
         </div>
 

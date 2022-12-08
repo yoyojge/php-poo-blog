@@ -26,3 +26,8 @@
 </div>
 
 <?php require_once(ROOT . '/Views/partials/footer.php'); ?>
+
+
+<?php
+// phpinfo();
+?>

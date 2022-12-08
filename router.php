@@ -10,6 +10,7 @@ $method = !empty($params[1]) ? $params[1] : 'index';
 require(ROOT . '/Models/Database.php');
 
 
+require 'vendor/autoload.php';
 
 
 if (file_exists("Controllers/". $controller . "Controller.php")) {

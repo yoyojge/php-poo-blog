@@ -9,6 +9,9 @@ use Models\Blog;
 require_once('Models/Category.php');
 use Models\Category;
 
+require_once('Models/User.php');
+use Models\User;
+
 class BlogController {	
 
 	/**
@@ -19,11 +22,25 @@ class BlogController {
 	public function index() {
 		// Ici on recupere tout les articles de blog
 		//appel de fonction de model
-		$_SESSION['msgErr'] = "";
+		// $_SESSION['msgErr'] = "";
 		$blog = new Blog;
 		$blogs = $blog->getAllBlogs();
+
+		//on verifie si un token est passée en url
+		if( !empty($_GET['token']) ){
+			$_SESSION['msgErr'] = "";
+			var_dump($_GET['token']);
+			$user = new User;
+			$user->validByToken($_GET['token']);
+			// var_export($userId );die;
+			
+		}
 		include('Views/blog/index.php');
 	}
+
+
+
+
 
 	// /blog/show/1
 	public function show($id) {
@@ -33,9 +50,13 @@ class BlogController {
 		include('Views/blog/show.php');
 	}
 
+
+
+
+
 	// /blog/create
 	public function create() {
-		$_SESSION['msgErr'] = "";
+		// $_SESSION['msgErr'] = "";
 		if( isset( $_SESSION['connected'])  && $_SESSION['connected'] === true ){
 			// affiche la vue de creation de blog
 			$cat = new Category;
@@ -51,7 +72,7 @@ class BlogController {
 	// /blog/store
 	public function store() {
 
-		$_SESSION['msgErr'] = "";
+		// $_SESSION['msgErr'] = "";
 		// on recupere $_POST, on traite les informations	
 		if( isset( $_SESSION['connected'])  && $_SESSION['connected'] === true ){
 		
