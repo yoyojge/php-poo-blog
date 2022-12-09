@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit26bbf60d9f77b52f049e0bc6ba3ab1bc
 {
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Somnambulist\\Components\\Validation\\' => 35,
+        ),
         'P' => 
         array (
             'PHPMailer\\PHPMailer\\' => 20,
@@ -14,6 +18,10 @@ class ComposerStaticInit26bbf60d9f77b52f049e0bc6ba3ab1bc
     );
 
     public static $prefixDirsPsr4 = array (
+        'Somnambulist\\Components\\Validation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/somnambulist/validation/src',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',

@@ -8,7 +8,7 @@ use Models\User;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-
+use Somnambulist\Components\Validation\Factory;
 
 class UserController {
 
@@ -45,7 +45,6 @@ class UserController {
 			$_SESSION['last_name'] =  htmlentities($_POST["last_name"]);
 			$_SESSION['email'] =  htmlentities($_POST["email"]);
 			$password =  htmlentities($_POST["password"]);
-			$confPassword =  htmlentities($_POST["confPassword"]);
 
 
 			$tab=[];
@@ -55,56 +54,56 @@ class UserController {
 			$tab['password'] = $password;
  
 			$tab['token'] = base_convert(hash('sha256', time() . mt_rand()), 16, 36);
-
 			
 			$_SESSION['msgErr'] = "";
 			
+			$validator = new Factory();
+			$validation = $validator->make($_POST + $_FILES, [
+				'first_name'                  => 'required',
+				'last_name'                  => 'required',
+				'email'                 => 'required|email',
+				'password'              => 'required|min:8',
+				'confPassword'      => 'required|same:password'
+			 ]);
 
-			// Vérifie grâce au filtre PHP que l'email est bien valide
-			if(!filter_var($_SESSION['email'], FILTER_VALIDATE_EMAIL)){
-				$_SESSION['msgErr'] .= "L'adresse e-mail n'est pas valide<br />";
-			 }
+			//  $validation->messages()->default('fr');
+			//  $validation->messages()->add('en', 'password:min', 'oulala il faut + de carracteres...');
 
-		  
-			// je vérifie que l'adresse mail n'est pas deja en base : critere UNIQUE sur email dans la BDD
-			$_SESSION['msgErr'] .= $this->user->getOneUser($_SESSION['email']) === false ?  "" : "L'adresse e-mail est deja utilisée<br />" ;
+			 $validation->validate();
+			 
+			 if ($validation->fails()) {
+				// handling errors
+				$errors = $validation->errors();				
+				$_SESSION['msgErr'] .= implode(" ", $errors->all('<li>:message</li>') );
+			 } 
 		   
 		  
-			// Validate password strength
-			// Je vérifie qu'il y ai bien minuscule, majuscule, chiffre et caractere spécial
-			 if( !preg_match("#[0-9]#",$password) ||  !preg_match("#[a-z]#",$password)  ||  !preg_match("#[A-Z]#",$password) ){         
-				$_SESSION['msgErr'] .= "Le mot de passe ne respecte pas les conitions ( au moins une majuscule, une minuscule, un chiffre<br />";
-			 }
+		
+			// Validate password strength : Je vérifie qu'il y ai bien minuscule, majuscule, chiffre et caractere spécial
+			//  if( !preg_match("#[0-9]#",$password) ||  !preg_match("#[a-z]#",$password)  ||  !preg_match("#[A-Z]#",$password) ){         
+			// 	$_SESSION['msgErr'] .= "Le mot de passe ne respecte pas les conitions ( au moins une majuscule, une minuscule, un chiffre<br />";
+			//  }
 					  
 		  
-			// Je vérifie que mon mot de passe est supérieur à 8 caractères
-			 if(  strlen($password) < 8  ){         
-				$_SESSION['msgErr'] .= "Le mot de passe doit faire faire + de 8 carracteres<br />";
-			 }
+			
 			 		  
 		  
-			// Je vérifie que les 2 mots de passe sont identique
-			if(  $password != $confPassword ){         
-				$_SESSION['msgErr'] .= "Les mots de passe ne sont pas identiques<br />";
-			}
+			
 
 			// var_dump($_SESSION['msgErr']);
 
 			if(empty($_SESSION['msgErr'])){
 				//si pas de message d'erreur
 
-				// on ash le mot de passe				
-				// $tab['password'] = hash('sha256', $tab['password']);
+				// on hashPassWord le mot de passe				
 				$tab['password'] = $this->hashPassWord($tab['password']);
 
 				// on envois au model pour sauvegarder en base de donnée;
-				// var_dump($tab);
 				$enregistrement =  $this->user->insertUser($tab);
 
 				
 				//envoi du mail avec le lien avec le jeton
 				if($enregistrement === true){
-
 
 					$mail = new PHPMailer();
 
@@ -112,8 +111,7 @@ class UserController {
 					$mail->isSMTP();                        			// Set mailer to use SMTP
 					$mail->Host       = 'smtp.gmail.com;';    			// Specify main SMTP server
 					$mail->SMTPAuth   = true;               			// Enable SMTP authentication
-					$mail->Username   = 'johann.griffe.pro@gmail.com';     // SMTP username
-					$mail->Password   = 'quxrjnsykkozkrjo';         		// SMTP password
+					include('gitIgnore/gmailApp.php');
 					$mail->SMTPSecure = 'tls';              			// Enable TLS encryption, 'ssl' also accepted
 					$mail->Port       = 587;                			// TCP port to connect to
 

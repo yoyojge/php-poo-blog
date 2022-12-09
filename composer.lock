@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4bbe1ace33ba4304c8d4da0a8d4905d",
+    "content-hash": "c18c219a0b56a7f63967814bc6f92b78",
     "packages": [
         {
             "name": "phpmailer/phpmailer",
@@ -85,6 +85,58 @@
                 }
             ],
             "time": "2022-12-08T13:30:06+00:00"
+        },
+        {
+            "name": "somnambulist/validation",
+            "version": "1.5.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/somnambulist-tech/validation.git",
+                "reference": "5e09ee5a5768d46406e7a78af0193e68af40d892"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/somnambulist-tech/validation/zipball/5e09ee5a5768d46406e7a78af0193e68af40d892",
+                "reference": "5e09ee5a5768d46406e7a78af0193e68af40d892",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^3.1.0",
+                "phpunit/phpunit": "^9.5",
+                "ramsey/uuid": "^4.3",
+                "symfony/var-dumper": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Somnambulist\\Components\\Validation\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Redfern",
+                    "email": "info@somnambulist.tech"
+                }
+            ],
+            "description": "A re-write of rakit/validation providing Laravel like validation as a standalone library",
+            "keywords": [
+                "php",
+                "symfony",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/somnambulist-tech/validation/issues",
+                "source": "https://github.com/somnambulist-tech/validation/tree/1.5.3"
+            },
+            "time": "2022-11-23T14:47:51+00:00"
         }
     ],
     "packages-dev": [],
