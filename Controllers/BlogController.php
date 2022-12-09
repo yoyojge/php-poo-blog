@@ -29,7 +29,7 @@ class BlogController {
 		//on verifie si un token est passée en url
 		if( !empty($_GET['token']) ){
 			$_SESSION['msgErr'] = "";
-			var_dump($_GET['token']);
+			// var_dump($_GET['token']);
 			$user = new User;
 			$user->validByToken($_GET['token']);
 			// var_export($userId );die;

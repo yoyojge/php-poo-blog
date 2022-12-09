@@ -1,6 +1,19 @@
 <?php require_once(ROOT . '/Views/partials/header.php'); ?>
 
 
+
+ 
+<?php
+// $psw  = "coucou";
+// $psw1 = password_hash($psw, PASSWORD_ARGON2I);
+// $psw2 = password_hash($psw, PASSWORD_ARGON2I);
+// echo $psw1."<br />";
+// echo $psw2."<br />";
+// var_dump(  password_verify($psw, $psw1 ) ) ;
+
+
+?>
+
 <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
     <div class="p-2">
 

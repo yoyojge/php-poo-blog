@@ -49,14 +49,14 @@ class User extends Database {
 	public function connect($tab) {
 		
 		$request = $this->bdd->prepare('
-          SELECT email FROM  users WHERE email= :email AND password = :password AND active =1
+          SELECT first_name, password, active FROM  users WHERE email= :email  
 		');
 
 		$request->execute([
-			'email' =>  $tab['email'],
-			'password' =>  $tab['password']
+			'email' =>  $tab['email']
+			
           ]);
-	     $data = $request->fetch();    
+		$data = $request->fetch(PDO::FETCH_ASSOC);   
 		return $data;
 	}
 

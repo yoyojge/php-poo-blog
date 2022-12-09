@@ -18,6 +18,14 @@ class UserController {
 	}
 
 
+	public function hashPassWord($psw){
+		return password_hash($psw, PASSWORD_ARGON2I);
+	}
+
+	public function verifyThePassword($pswClear, $pswHashed){
+		return password_verify($pswClear, $pswHashed); 
+	}
+
 	// /user/create
 	public function create() {
 		// affiche la vue de creation de categorie
@@ -50,13 +58,7 @@ class UserController {
 
 			
 			$_SESSION['msgErr'] = "";
-
-			if(empty($_SESSION['first_name'])){
-				$_SESSION['msgErr'] .= "Le prenom n'est pas renseigné<br />";
-			}
-			if(empty($_SESSION['last_name'])){
-				$_SESSION['msgErr'] .= "Le nom n'est pas renseigné<br />";
-			}
+			
 
 			// Vérifie grâce au filtre PHP que l'email est bien valide
 			if(!filter_var($_SESSION['email'], FILTER_VALIDATE_EMAIL)){
@@ -91,9 +93,10 @@ class UserController {
 			if(empty($_SESSION['msgErr'])){
 				//si pas de message d'erreur
 
-				// on ash le mot de passe
-				// $salt = 'pHp_1s_B3sT_l4Ngu4g3';
-				$tab['password'] = hash('sha256', $tab['password']);
+				// on ash le mot de passe				
+				// $tab['password'] = hash('sha256', $tab['password']);
+				$tab['password'] = $this->hashPassWord($tab['password']);
+
 				// on envois au model pour sauvegarder en base de donnée;
 				// var_dump($tab);
 				$enregistrement =  $this->user->insertUser($tab);
@@ -191,19 +194,26 @@ class UserController {
 			if(empty($_SESSION['msgErr'])){
 				//si pas de message d'erreur
 
-				// on ash le mot de passe
-				// $salt = 'pHp_1s_B3sT_l4Ngu4g3';
-				$tab['password'] = hash('sha256', $tab['password']);
+				
+				// var_dump($tab['password']);die;
+				// on recupere le mot de passe hashé qui est en BDD
+				$infoConnect = $this->user->connect($tab);
 
-				// on envoie au model pour connection;
-				$connectedState = $this->user->connect($tab);
+				//on verifie que le mot de passe hashé est valide
+				// var_dump($infoConnect); 
+				// echo $tab['password']; die;
+				// echo $infoConnect['password']; die;
 
-				var_dump($connectedState);
-
-				if(!empty($connectedState)){
-					$_SESSION['connected'] = true;
+				if( $this->verifyThePassword( $tab['password'], $infoConnect['password'] )   && $infoConnect['active'] ){
+					$_SESSION['user']['connected'] = true;
+					$_SESSION['user']['first_name'] = $infoConnect['first_name'];
 					header("Location: /blog");
 				}
+				elseif($infoConnect['active'] == 0){
+					$_SESSION['msgErr'] .= "Vous n'avez pas validé votre compte, regardez vos emails !!!<br />";
+					header("Location: /user/loggin");	
+				}
+
 				else{
 					$_SESSION['msgErr'] .= "parametres de connexion incorrectes !!!<br />";
 					header("Location: /user/loggin");	

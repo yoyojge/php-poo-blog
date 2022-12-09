@@ -8,6 +8,19 @@
 	  <link rel="stylesheet" type="text/css" href="/misc/css/style.css">
 
     <script src="https://cdn.tiny.cloud/1/o06hdpeotgvt1ks5eg12xfbw4ycd9na36f8cnxsmmnpv5h5z/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+
+    <script>
+      function messageUserNotConnected(){
+        document.getElementById('errNotConnected').style.display = "block";
+        document.getElementById('errNotConnected').innerHTML="Vous n'avez pas acces a cette rubrique !!!";
+      }
+      function ErasemessageUser(){
+        document.getElementById('errNotConnected').style.display = "none;";
+        document.getElementById('errNotConnected').innerHTML="";
+      }
+      ErasemessageUser();
+    </script>
 </head>
 <body>
 
@@ -15,7 +28,7 @@
 
 <?php
 $connected=false;
-if( isset( $_SESSION['connected'])  && $_SESSION['connected'] === true ){
+if( isset( $_SESSION['user']['connected'])  && $_SESSION['user']['connected'] === true ){
   $connected=true;
 }
 ?>
@@ -31,16 +44,17 @@ if( isset( $_SESSION['connected'])  && $_SESSION['connected'] === true ){
 
         <a href="/" class="text-base font-medium text-gray-500 hover:text-gray-900" title="Accueil"> Accueil </a>
 
-        <a href="<?= $connected === false ? '#' : '/blog/create' ?>" class="text-base font-medium text-gray-500 hover:text-gray-900" title="<?= $connected ===false ? 'Vous devez être connecté' : '' ?>"> Nouveau blog </a>
+        <a href="<?= $connected === false ? 'javascript:messageUserNotConnected();' : '/blog/create' ?>" class="text-base font-medium text-gray-500 hover:text-gray-900" title="<?= $connected ===false ? 'Vous devez être connecté' : '' ?>"> Nouveau blog </a>
 
         <a href="/category" class="text-base font-medium text-gray-500 hover:text-gray-900"> Les categories </a>
 
-        <a href="<?= $connected === false ? '#' : '/category/create' ?>" class="text-base font-medium text-gray-500 hover:text-gray-900"   title="<?= $connected === false ? 'Vous devez être connecté' : '' ?>" > Nouvelle categorie </a>
+        <a href="<?= $connected === false ? 'javascript:messageUserNotConnected();' : '/category/create' ?>" class="text-base font-medium text-gray-500 hover:text-gray-900"   title="<?= $connected === false ? 'Vous devez être connecté' : '' ?>" > Nouvelle categorie </a>
 
         <?php
         if( $connected === true ){
         ?>  
           <div>
+            bonjour <?= $_SESSION['user']['first_name'] ?><br />
             <a href="/user/logout" class="text-base font-medium text-gray-500 hover:text-gray-900">LOG OUT</a><br >            
         </div>
         <?php
@@ -59,3 +73,6 @@ if( isset( $_SESSION['connected'])  && $_SESSION['connected'] === true ){
     </div>
   </div>
 </div>
+
+
+<div id="errNotConnected" style="display:none,"></div>
